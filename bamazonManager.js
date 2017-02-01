@@ -30,6 +30,55 @@ var viewProductList = function() {
 
 };
 
+var viewLowInventory = function() {
+
+    connection.query('SELECT * FROM products WHERE stock_quantity<=?', [250], function(err,res) {
+        if (err) throw err;
+        var table = new Table({
+            head: ['Product ID', 'Name', 'Department', 'Price', 'Stock Quantity'],
+            colWidths: [10, 30, 20, 15, 20]
+        });
+
+        for (var i=0; i<res.length; i++) {
+            table.push(
+                [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity]
+            );
+        }
+        console.log(table.toString());
+        searchPrompt();
+    });
+
+};
+
+var addToInventory = function() {
+
+    inquirer.prompt([
+        {
+            type: "name",
+            message: "What product would you like to restock?: ",
+            name: "product"
+        },
+        {
+            type: "name",
+            message: "Amount to add: ",
+            name: "amount"
+        }
+    ]).then(function(user) {
+
+        var amount = parseInt(user.amount);
+
+        connection.query('SELECT * FROM products WHERE product_name=?',[user.product], function(err,res) {
+            if (err) throw err;
+            connection.query('UPDATE products SET stock_quantity = ? WHERE product_name =?', [(res[0].stock_quantity + amount), user.product]);
+            console.log(user.amount + " " + user.product + " have been added!");
+            searchPrompt();
+
+        });
+
+    });
+
+};
+
 var searchPrompt = function() {
     inquirer.prompt([
         {
