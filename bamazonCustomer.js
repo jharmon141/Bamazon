@@ -15,15 +15,15 @@ var searchPrompt = function() {
         {
             type: "name",
             message: "What would you like to buy?: ",
-            name: "userProduct"
+            name: "product"
         },
         {
             type: "name",
             message: "Quantity: ",
-            name: "userQuantity"
+            name: "quantity"
         }
-    ]).then(function(userProduct, userQuantity){
-        customerPurchase(userProduct.userProduct,userProduct.userQuantity);
+    ]).then(function(user){
+        customerPurchase(user.product, user.quantity);
     });
 };
 
@@ -77,7 +77,7 @@ var customerSearch = function(){
         if (err) throw err;
         var table = new Table({
             head: ['Product ID', 'Name', 'Department', 'Price'],
-            colWidths: [10, 30, 20, 15]
+            colWidths: [15, 30, 30, 15]
         });
 
         for (var i=0; i<res.length; i++) {
